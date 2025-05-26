@@ -4,54 +4,6 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="2ed32ef02a7f4228-2" value="&lt;div style=&quot;box-sizing: border-box; width: 100%; background: rgb(228, 228, 228); padding: 2px;&quot;&gt;Aeroportos&lt;/div&gt;&lt;table style=&quot;width: 100% ; font-size: 1em&quot; cellpadding=&quot;2&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;PK&lt;/td&gt;&lt;td&gt;uniqueId&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FK1&lt;/td&gt;&lt;td&gt;foreignKey&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;fieldname&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;br&gt;&lt;/td&gt;&lt;td&gt;fieldname&lt;br&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FK1&lt;br&gt;&lt;/td&gt;&lt;td&gt;foreignKey&lt;br&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FK1&lt;br&gt;&lt;/td&gt;&lt;td&gt;foreignKey&lt;br&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12" parent="1" vertex="1">
-          <mxGeometry x="1090" y="30" width="180" height="130" as="geometry" />
-        </mxCell>
-        <mxCell id="Xm3tBWq0qwTZGbFQvJrr-5" value="" style="endArrow=none;html=1;rounded=0;" parent="1" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="1080" y="220" as="sourcePoint" />
-            <mxPoint x="1180" y="220" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="Xm3tBWq0qwTZGbFQvJrr-7" value="" style="endArrow=classic;html=1;rounded=0;shape=link;" parent="1" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="1080" y="300" as="sourcePoint" />
-            <mxPoint x="1180" y="300" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="Xm3tBWq0qwTZGbFQvJrr-26" value="" style="group" parent="1" vertex="1" connectable="0">
-          <mxGeometry x="1079" y="251.5" width="107.5" height="10" as="geometry" />
-        </mxCell>
-        <mxCell id="Xm3tBWq0qwTZGbFQvJrr-24" value="" style="endArrow=none;html=1;rounded=0;" parent="Xm3tBWq0qwTZGbFQvJrr-26" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint y="4.939999999999998" as="sourcePoint" />
-            <mxPoint x="100" y="4.939999999999998" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="Xm3tBWq0qwTZGbFQvJrr-25" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.acute_triangle;dx=0.5;rotation=90;fillColor=#000000;" parent="Xm3tBWq0qwTZGbFQvJrr-26" vertex="1">
-          <mxGeometry x="99" y="1.5" width="10" height="7" as="geometry" />
-        </mxCell>
-        <mxCell id="Xm3tBWq0qwTZGbFQvJrr-27" value="" style="group" parent="1" vertex="1" connectable="0">
-          <mxGeometry x="1078" y="334.5" width="107.5" height="10" as="geometry" />
-        </mxCell>
-        <mxCell id="Xm3tBWq0qwTZGbFQvJrr-9" value="" style="endArrow=classic;html=1;rounded=0;shape=link;" parent="Xm3tBWq0qwTZGbFQvJrr-27" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint y="4.930000000000007" as="sourcePoint" />
-            <mxPoint x="100" y="4.930000000000007" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="Xm3tBWq0qwTZGbFQvJrr-23" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.acute_triangle;dx=0.5;rotation=90;fillColor=#000000;" parent="Xm3tBWq0qwTZGbFQvJrr-27" vertex="1">
-          <mxGeometry x="99" y="1.5" width="10" height="7" as="geometry" />
-        </mxCell>
-        <mxCell id="Xm3tBWq0qwTZGbFQvJrr-28" value="" style="rhombus;whiteSpace=wrap;html=1;strokeColor=default;align=center;verticalAlign=top;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=#FFFFFF;" parent="1" vertex="1">
-          <mxGeometry x="1340" y="260" width="80" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="Xm3tBWq0qwTZGbFQvJrr-31" value="" style="endArrow=none;html=1;rounded=0;" parent="1" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="1090" y="230" as="sourcePoint" />
-            <mxPoint x="1190" y="230" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="cWytQhBNAw67fKuN8wvv-1" value="Avião" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-305" y="381.75" width="120" height="60" as="geometry" />
         </mxCell>
@@ -473,7 +425,7 @@
           <mxGeometry x="737.24" y="574.75" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="uvQwiletEwAoErd7GZ6_-3" value="&lt;div&gt;RI-1: O conjunto (Cidade Principal, Nome) é único em Aeroporto&lt;/div&gt;RI-2: Nenhum aeroporto tem mais que 5 terminais&lt;div&gt;RI-3: O maior número da fila para a Classe 1 não pode ser superior ao menor da Classe 2&lt;/div&gt;&lt;div&gt;RI-4: Não existem mais bilhetes do que assentos com a mesma Classe, para o mesmo Voo&lt;/div&gt;&lt;div&gt;RI-5: Tempo de Partida tem que ser anterior ao tempo de chegada&lt;/div&gt;&lt;div&gt;RI-6: Aeroporto Partida tem que ser diferente do Aeroporto Chegada&lt;/div&gt;&lt;div&gt;RI-7: No caso da Venda ser efetuada num Balcão deve ser registado o ID do Aeroporto&lt;/div&gt;&lt;div&gt;RI-8: O conjunto (Tempo Partida, aeroporto partida, código de reserva, primeiro nome, último nome) é único em Bilhete&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="359.99" y="124.25" width="280" height="208.25" as="geometry" />
+          <mxGeometry x="363.99" y="97" width="390.01" height="202.5" as="geometry" />
         </mxCell>
         <mxCell id="uvQwiletEwAoErd7GZ6_-5" value="Modelo" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-305" y="166" width="120" height="60" as="geometry" />
