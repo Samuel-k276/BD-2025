@@ -320,10 +320,10 @@
             <mxPoint x="467.74" y="803.08" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="cWytQhBNAw67fKuN8wvv-73" value="&lt;u&gt;NIF&lt;/u&gt;" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="cWytQhBNAw67fKuN8wvv-73" value="&lt;u&gt;nif&lt;/u&gt;" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="377.74" y="906.75" width="80" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="cWytQhBNAw67fKuN8wvv-74" value="Nome completo" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="cWytQhBNAw67fKuN8wvv-74" value="nome completo" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="482.74" y="906.7500000000001" width="80" height="60" as="geometry" />
         </mxCell>
         <mxCell id="cWytQhBNAw67fKuN8wvv-75" value="" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" parent="1" source="cWytQhBNAw67fKuN8wvv-71" target="cWytQhBNAw67fKuN8wvv-74" edge="1">
@@ -379,7 +379,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cWytQhBNAw67fKuN8wvv-113" value="Bagagem?" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="cWytQhBNAw67fKuN8wvv-113" value="direito a bagagem" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-128" y="568.75" width="80" height="60" as="geometry" />
         </mxCell>
         <mxCell id="cWytQhBNAw67fKuN8wvv-114" value="" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="cWytQhBNAw67fKuN8wvv-109" target="cWytQhBNAw67fKuN8wvv-113" edge="1">
