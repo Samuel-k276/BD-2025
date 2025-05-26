@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" version="27.0.9">
   <diagram name="Page-1" id="2ca16b54-16f6-2749-3443-fa8db7711227">
-    <mxGraphModel dx="2214" dy="464" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2527" dy="773" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -424,7 +424,7 @@
         <mxCell id="uvQwiletEwAoErd7GZ6_-2" value="RI-2" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="737.24" y="574.75" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="uvQwiletEwAoErd7GZ6_-3" value="&lt;div&gt;RI-1: O conjunto (Cidade Principal, Nome) é único em Aeroporto&lt;/div&gt;RI-2: Nenhum aeroporto tem mais que 5 terminais&lt;div&gt;RI-3: O maior número da fila para a Classe 1 não pode ser superior ao menor da Classe 2&lt;/div&gt;&lt;div&gt;RI-4: Não existem mais bilhetes do que assentos com a mesma Classe, para o mesmo Voo&lt;/div&gt;&lt;div&gt;RI-5: Tempo de Partida tem que ser anterior ao tempo de chegada&lt;/div&gt;&lt;div&gt;RI-6: Aeroporto Partida tem que ser diferente do Aeroporto Chegada&lt;/div&gt;&lt;div&gt;RI-7: No caso da Venda ser efetuada num Balcão deve ser registado o ID do Aeroporto&lt;/div&gt;&lt;div&gt;RI-8: O conjunto (Tempo Partida, aeroporto partida, código de reserva, primeiro nome, último nome) é único em Bilhete&lt;/div&gt;&lt;div&gt;RI-9: Um avião não pode ter vários voos em simultâneo&lt;/div&gt;&lt;div&gt;RI-10: Em cada voo, cada assento corresponde a um bilhete diferente&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+        <mxCell id="uvQwiletEwAoErd7GZ6_-3" value="&lt;div&gt;RI-1: O conjunto (Cidade Principal, Nome) é único em Aeroporto&lt;/div&gt;RI-2: Nenhum aeroporto tem mais que 5 terminais&lt;div&gt;RI-3: O maior número da fila para a Classe 1 não pode ser superior ao menor da Classe 2&lt;/div&gt;&lt;div&gt;RI-4: Não existem mais bilhetes do que assentos com a mesma Classe, para o mesmo Voo&lt;/div&gt;&lt;div&gt;RI-5: Tempo de Partida tem que ser anterior ao tempo de chegada&lt;/div&gt;&lt;div&gt;RI-6: Aeroporto Partida tem que ser diferente do Aeroporto Chegada&lt;/div&gt;&lt;div&gt;RI-7: No caso da Venda ser efetuada num Balcão deve ser registado o ID do Aeroporto&lt;/div&gt;&lt;div&gt;RI-8: O conjunto (Tempo Partida, aeroporto partida, código de reserva, primeiro nome, último nome) é único em Bilhete&lt;/div&gt;&lt;div&gt;RI-9: Um avião não pode ter vários voos em simultâneo&lt;/div&gt;&lt;div&gt;RI-10: Em cada voo, cada assento corresponde a um bilhete diferente&lt;/div&gt;&lt;div&gt;RI-11: Em Avião, número de serie é único&lt;/div&gt;&lt;div&gt;RI-12: O conjuntos {(código de voo, tempo partida, aeroporto partida),(código de voo, tempo chegada, aeroporto chegada),(&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;tempo partida, aeroporto partida,&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;tempo chegada, aeroporto chegada)} são únicos em Voo&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="363.99" y="97" width="390.01" height="202.5" as="geometry" />
         </mxCell>
         <mxCell id="uvQwiletEwAoErd7GZ6_-5" value="Modelo" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -766,11 +766,17 @@
         <mxCell id="pTzb7-u-k10YuvpFTsjF-24" value="resulta num &amp;lt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="258.45" y="693.25" width="87.7" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="OLR0leiXKhhOna7T9H4y-1" value="RI-9" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="OLR0leiXKhhOna7T9H4y-1" value="RI-9" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="-112.5" y="335" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="OLR0leiXKhhOna7T9H4y-2" value="RI-10" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="OLR0leiXKhhOna7T9H4y-2" value="RI-10" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="118" y="960" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1eDvAHGu9s2klRZzMkJ6-1" value="RI-11" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-415" y="273" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1eDvAHGu9s2klRZzMkJ6-2" value="RI-12" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="154" y="419.5" width="60" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
