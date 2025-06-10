@@ -45,6 +45,10 @@ CREATE TABLE venda (
 	nif_cliente CHAR(9) NOT NULL,
 	balcao CHAR(3) REFERENCES aeroporto(codigo),
 	hora TIMESTAMP
+
+	CONSTRAINT check_hora_venda CHECK (
+		hora < (SELECT MIN(hora_partida) FROM bilhete WHERE bilhete.codigo_reserva = venda.codigo_reserva JOIN voo ON voo.id = bilhete.voo_id)
+	)
 );
 
 CREATE TABLE bilhete (
@@ -65,18 +69,16 @@ CREATE TABLE bilhete (
 		 prim_classe = (SELECT prim_classe FROM assento WHERE lugar = bilhete.lugar AND no_serie = bilhete.no_serie))
 	)
 
-	CONSTRAINT check_aviao_no_serie CHECK (
+	CONSTRAINT check_no_serie CHECK (
 		(lugar IS NULL AND no_serie IS NULL) OR
 		(lugar IS NOT NULL AND no_serie IS NOT NULL AND
 		 no_serie = (SELECT no_serie FROM voo WHERE voo_id = voo.id))
 	)
 
-	CONSTRAINT check_class_capacity CHECK (
+	CONSTRAINT check_capacidade_classe CHECK (
 		((SELECT COUNT(*) FROM bilhete WHERE voo_id = voo.id AND prim_classe = TRUE) <=
 		(SELECT COUNT(*) FROM assento WHERE no_serie = voo.no_serie AND prim_classe = TRUE)) AND 
 		((SELECT COUNT(*) FROM bilhete WHERE voo_id = voo.id AND prim_classe = FALSE) <=
 		(SELECT COUNT(*) FROM assento WHERE no_serie = voo.no_serie AND prim_classe = FALSE))
 	)
-
-	
 );
