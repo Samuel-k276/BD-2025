@@ -58,4 +58,16 @@ CREATE TABLE bilhete (
 	no_serie VARCHAR(80),
 	UNIQUE (voo_id, codigo_reserva, nome_passegeiro),
 	FOREIGN KEY (lugar, no_serie) REFERENCES assento
+
+   CONSTRAINT check_classe_assento CHECK (
+		(lugar IS NULL AND no_serie IS NULL) OR
+		(lugar IS NOT NULL AND no_serie IS NOT NULL AND
+		 prim_classe = (SELECT prim_classe FROM assento WHERE lugar = bilhete.lugar AND no_serie = bilhete.no_serie))
+	)
+
+	CONSTRAINT check_aviao_no_serie CHECK (
+		(lugar IS NULL AND no_serie IS NULL) OR
+		(lugar IS NOT NULL AND no_serie IS NOT NULL AND
+		 no_serie = (SELECT no_serie FROM voo WHERE voo_id = voo.id))
+	)
 );
