@@ -70,4 +70,13 @@ CREATE TABLE bilhete (
 		(lugar IS NOT NULL AND no_serie IS NOT NULL AND
 		 no_serie = (SELECT no_serie FROM voo WHERE voo_id = voo.id))
 	)
+
+	CONSTRAINT check_class_capacity CHECK (
+		((SELECT COUNT(*) FROM bilhete WHERE voo_id = voo.id AND prim_classe = TRUE) <=
+		(SELECT COUNT(*) FROM assento WHERE no_serie = voo.no_serie AND prim_classe = TRUE)) AND 
+		((SELECT COUNT(*) FROM bilhete WHERE voo_id = voo.id AND prim_classe = FALSE) <=
+		(SELECT COUNT(*) FROM assento WHERE no_serie = voo.no_serie AND prim_classe = FALSE))
+	)
+
+	
 );
