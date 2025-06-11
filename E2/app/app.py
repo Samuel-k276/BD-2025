@@ -57,7 +57,23 @@ def list_all_airports():
 
 @app.route('/voos/<partida>', methods=['GET'])
 def list_flights_from_departure(partida):
-   return jsonify(f"List of flights from {partida}")
+   try:
+      with pool.connection() as conn:
+         with conn.cursor() as cur:
+            now = datetime.now() + timedelta(hours=12)
+            cur.execute("""SELECT no_serie, hora_partida, partida, chegada FROM voo
+                        WHERE partida = %s AND hora_partida > %s""", (partida, now ))
+            rows = cur.fetchall()
+            voos = [{"número de série": row[0],"hora de partida": row[1].isoformat(),"Aeroporto de chegada": row[3]} for row in rows]
+      return jsonify(voos)
+   except Exception as e:
+      return jsonify({"error": str(e)}), 500
+
+
+
+
+
+
 
 @app.route('/voos/<partida>/<chegada>', methods=['GET'])
 def list_flights(partida, chegada):
