@@ -65,7 +65,7 @@ def airports():
          except Exception as e:
             log.error(f"Database error: {e}")
             return jsonify({"error": str(e)}), 500
-         
+
 
 @app.route('/voos/<partida>', methods=['GET'])
 def list_flights_from_departure(partida):
@@ -133,32 +133,75 @@ def list_flights(partida: str, chegada: str):
             return jsonify({"error": str(e)}), 500
 
 
-
 @app.route('/compra/<voo>', methods=['POST'])
-def make_purchhase(voo):
+def make_purchase(voo):
    """
    json = {
-      nif_cliente: 123456789,
-      bilhetes: [{nome: "John Doe", classe: 1}, {nome: "Jane Doe", classe: 2}]
+      nif_cliente: 123456789,`
+      bilhetes: [{nome: "John Doe", classe: 1}, {nome: "Jane Doe", classe: 2}]`
    }
    """
    data = request.get_json()
-   
-   if not data:
-      return jsonify({"error": "No JSON data provided"}), 400
-      
    nif_cliente = data.get('nif_cliente')
    bilhetes = data.get('bilhetes')
 
-   if not nif_cliente or not bilhetes:
+   if not (nif_cliente and bilhetes):
       return jsonify({"error": "Invalid data"}), 400
 
-   return jsonify({
-      "message": f"Purchase made for flight {voo}",
-      "nif_cliente": nif_cliente,
-      "bilhetes": bilhetes
-   }), 200
-   
+
+   with pool.connection() as conn:
+      with conn.cursor() as cur:
+         try:
+            cur.execute("""SELECT no_serie FROM voo WHERE id = %s""", (voo,))
+            no_serie = cur.fetchone()
+            
+            if not no_serie:
+               return jsonify({"error": "Invalid data"}), 400
+            no_serie = no_serie[0]
+            
+            primeira = sum(1 for b in bilhetes if b["classe"] == 1)
+            segunda = len(bilhetes) - primeira
+            
+            cur.execute("""SELECT 
+                        (SELECT COUNT(*) FROM assento
+                        WHERE no_serie = %s AND prim_classe = TRUE
+                        AND (lugar, no_serie) NOT IN (
+                        SELECT lugar, no_serie FROM bilhete WHERE voo_id = %s
+                        )) >= %s AS enough_prim_class,
+                        
+                        (SELECT COUNT(*) FROM assento
+                        WHERE no_serie = %s AND prim_classe = FALSE
+                        AND (lugar, no_serie) NOT IN (
+                        SELECT lugar, no_serie FROM bilhete WHERE voo_id = %s
+                        )) >= %s AS enough_seg_class""", (no_serie, voo, primeira, no_serie, voo, segunda))
+            
+            enough_prim_class, enough_seg_class = cur.fetchone()
+            if not (enough_prim_class and enough_seg_class):
+               return jsonify({"error": "Assentos insuficientes"}), 400
+            
+            now = datetime.now()
+            cur.execute("""INSERT INTO venda (nif_cliente, balcao, hora)
+                        VALUES (%s, %s, %s)
+                        RETURNING codigo_reserva;""", (nif_cliente, None, now))
+            codigo_reserva = cur.fetchone()[0]
+
+            for b in bilhetes:
+               prim_classe = b["classe"] == 1
+               preco = 120 if prim_classe else 60
+               cur.execute("""
+               INSERT INTO bilhete (voo_id, codigo_reserva, nome_passegeiro, preco, prim_classe, no_serie)
+               VALUES (%s, %s, %s, %s, %s, %s)""", (voo, codigo_reserva, b["nome"], preco, prim_classe, no_serie))
+            
+            conn.commit()
+            
+            return jsonify({
+               "message": f"Purchase made for flight {voo}",
+               "nif_cliente": nif_cliente,
+               "bilhetes": bilhetes
+               }), 200
+         except Exception as e:
+            conn.rollback()
+            return jsonify({"error": str(e)}), 500
 
 
 @app.route('/checkin/<bilhete>', methods=['POST'])
