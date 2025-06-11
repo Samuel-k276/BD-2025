@@ -67,7 +67,7 @@ def airports():
             return jsonify({"error": str(e)}), 500
          
 
-@app.route('/voos/<partida>/', methods=['GET'])
+@app.route('/voos/<partida>', methods=['GET'])
 def list_flights_from_departure(partida):
    """
    Retorna os voos que partem de um aeroporto específico.
@@ -91,7 +91,7 @@ def list_flights_from_departure(partida):
             return jsonify({"error": str(e)}), 500
 
 
-@app.route('/voos/<partida>/<chegada>/', methods=['GET'])
+@app.route('/voos/<partida>/<chegada>', methods=['GET'])
 def list_flights(partida: str, chegada: str):
    """
    Retorna os voos disponíveis entre dois aeroportos específicos.
@@ -134,7 +134,7 @@ def list_flights(partida: str, chegada: str):
 
 
 
-@app.route('/compra/<voo>/', methods=['POST'])
+@app.route('/compra/<voo>', methods=['POST'])
 def make_purchhase(voo):
    """
    json = {
@@ -161,7 +161,7 @@ def make_purchhase(voo):
    
 
 
-@app.route('/checkin/<bilhete>/', methods=['POST'])
+@app.route('/checkin/<bilhete>', methods=['POST'])
 def check_in(bilhete_id):
    """
    Realiza o check-in de um bilhete, atribuindo um lugar disponível.
@@ -234,5 +234,4 @@ def check_in(bilhete_id):
 
 
 if __name__ == '__main__':
-   check_connection()
-   app.run(debug=True, port=5000)
+   app.run()
