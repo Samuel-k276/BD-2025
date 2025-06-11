@@ -70,6 +70,7 @@ BEGIN
       WHERE a1.codigo != a2.codigo
    );
    
+   route_num := 0;
    -- Generate flights for each day from Jan 1 to Jul 31, 2025
    FOR flight_date IN SELECT generate_series(
       '2025-01-01'::DATE, 
@@ -80,8 +81,8 @@ BEGIN
       -- Create 5 flights per day
       FOR i IN 1..5 LOOP
          -- Select route
-         route := routes[1 + (i-1) % array_length(routes, 1)];
-         
+         route := routes[1 + (route_num) % array_length(routes, 1)];
+         route_num := route_num + 1;
          -- Select airplane in round-robin fashion
          airplane_no := (SELECT no_serie FROM aviao ORDER BY no_serie LIMIT 1 OFFSET airplane_idx);
          airplane_idx := (airplane_idx + 1) % airplane_count;
