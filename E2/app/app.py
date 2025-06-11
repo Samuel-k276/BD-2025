@@ -47,7 +47,7 @@ def list_all_airports():
    with pool.connections() as conn:
       with conn.cursor() as cur:
          try:
-            cur.execute("SELECT nome, cidade FROM aeroporto ORDER BY nome")
+            cur.execute("""SELECT nome, cidade FROM aeroporto ORDER BY nome""")
             airports = cur.fetchall()
             return jsonify([{"nome": row[0], "cidade": row[1]} for row in airports])
          except Exception as e:
@@ -61,7 +61,42 @@ def list_flights_from_departure(partida):
 
 @app.route('/voos/<partida>/<chegada>', methods=['GET'])
 def list_flights(partida, chegada):
-   return jsonify(f"List of flights from {partida} to {chegada}")
+   try:
+      now = datetime.now()
+      with pool.connection as conn:
+         with conn.cursor() as cur:
+            cur.execute("""
+                     SELECT v.no_serie, v.hora_partida
+                     from voo v
+                     WHERE v.partida = %s 
+                        AND v.chegada = %s 
+                        AND v.hora_partida > %s
+                        AND EXISTS (
+                           SELECT 1
+                           FROM assento a
+                           WHERE a.no_serie = v.no_serie
+                              AND NOT EXISTS (
+                                 SELECT 1 FROM bilhete b
+                                 WHERE b.voo_id = v.id
+                                    AND b.no_serie = a.no_serie
+                                    AND b.lugar = a.lugar
+                              )  
+                        )
+                     ORDER BY v.hora_partida ASC
+                     LIMIT 3;    
+                  """, (partida.upper(), chegada.upper(), now))
+            rows = cur.fetchall()
+            results = [
+               {"no_serie": row[0], "hora_partida": row[1].isoformat()}
+               for row in rows
+            ]
+            return jsonify(results), 200
+   except Exception as e:
+      return jsonify({"error": str(e)}), 500
+
+            
+                     
+   
 
 
 @app.route('/compra/<voo>', methods=['GET'])
