@@ -61,13 +61,13 @@ def airports():
                """
             ).fetchall()
             log.info(f"Retrieved {len(airports)} airports from the database.")
-            return jsonify([{"nome": row[0], "cidade": row[1]} for row in airports])
+            return jsonify([{"nome": row[0], "cidade": row[1]} for row in airports]), 200
          except Exception as e:
+            log.error(f"Database error: {e}")
             return jsonify({"error": str(e)}), 500
          
 
-
-@app.route('/voos/<partida>', methods=['GET'])
+@app.route('/voos/<partida>/', methods=['GET'])
 def list_flights_from_departure(partida):
    """
    Retorna os voos que partem de um aeroporto específico.
@@ -85,12 +85,13 @@ def list_flights_from_departure(partida):
                (partida, now)
             ).fetchall()
             voos = [{"número de série": row[0],"hora de partida": row[1].isoformat(),"Aeroporto de chegada": row[3]} for row in rows]
-            return jsonify(voos)
+            return jsonify(voos), 200
          except Exception as e:
+            log.error(f"Database error: {e}")
             return jsonify({"error": str(e)}), 500
 
 
-@app.route('/voos/<partida>/<chegada>', methods=['GET'])
+@app.route('/voos/<partida>/<chegada>/', methods=['GET'])
 def list_flights(partida: str, chegada: str):
    """
    Retorna os voos disponíveis entre dois aeroportos específicos.
@@ -133,15 +134,19 @@ def list_flights(partida: str, chegada: str):
 
 
 
-@app.route('/compra/<voo>', methods=['POST'])
+@app.route('/compra/<voo>/', methods=['POST'])
 def make_purchhase(voo):
    """
    json = {
-      nif_cliente: 123456789,`
-      bilhetes: [{nome: "John Doe", classe: 1}, {nome: "Jane Doe", classe: 2}]`
+      nif_cliente: 123456789,
+      bilhetes: [{nome: "John Doe", classe: 1}, {nome: "Jane Doe", classe: 2}]
    }
    """
    data = request.get_json()
+   
+   if not data:
+      return jsonify({"error": "No JSON data provided"}), 400
+      
    nif_cliente = data.get('nif_cliente')
    bilhetes = data.get('bilhetes')
 
@@ -156,7 +161,7 @@ def make_purchhase(voo):
    
 
 
-@app.route('/checkin/<bilhete>', methods=['POST'])
+@app.route('/checkin/<bilhete>/', methods=['POST'])
 def check_in(bilhete_id):
    """
    Realiza o check-in de um bilhete, atribuindo um lugar disponível.
@@ -178,7 +183,7 @@ def check_in(bilhete_id):
                return jsonify({"error": "Bilhete não encontrado"}), 404
 
             if bilhete[4] is not None:
-               return jsonify({"error": "Check-in já feito"}), 400
+               return jsonify({"error": "Check-in já feito"}), 409
 
             no_serie = bilhete[2]
             classe = bilhete[3]
@@ -201,7 +206,7 @@ def check_in(bilhete_id):
             ).fetchone()
 
             if assento_livre is None:
-               return jsonify({"error": "Sem lugares disponíveis nessa classe"}), 400
+               return jsonify({"error": "Sem lugares disponíveis nessa classe"}), 409
 
             lugar_atribuido = assento_livre[0]
 
@@ -216,13 +221,15 @@ def check_in(bilhete_id):
             )
 
             conn.commit()
-
+            
             return jsonify({
                "message": "Check-in efetuado com sucesso",
                "lugar_atribuido": lugar_atribuido
             }), 200
 
          except Exception as e:
+            conn.rollback()  # Rollback em caso de erro
+            log.error(f"Database error: {e}")
             return jsonify({"error": str(e)}), 500
 
 
