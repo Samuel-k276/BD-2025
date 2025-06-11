@@ -8,7 +8,7 @@ def list_all_airports():
 
 @app.route('/voos/<partida>', methods=['GET'])
 def list_flights_from_departure(partida):
-   return f"List of flights from {partida}"
+   return jsonify(f"List of flights from {partida}")
 
 @app.route('/voos/<partida>/<chegada>', methods=['GET'])
 def list_flights(partida, chegada):
@@ -39,7 +39,7 @@ def make_purchhase(voo):
 
 @app.route('/checkin/<bilhete>', methods=['GET'])
 def check_in(bilhete):
-   return f"Check-in for ticket {bilhete} successful"	
+   return jsonify(f"Check-in for ticket {bilhete} successful"	)
 
 
 if __name__ == '__main__':
