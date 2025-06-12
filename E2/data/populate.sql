@@ -1,3 +1,5 @@
+%%sql
+
 -- populate.sql
 BEGIN;
 
@@ -36,19 +38,15 @@ INSERT INTO aviao (no_serie, modelo) VALUES
    ('E195-001', 'Embraer E195');
 
 -- 3. Insert seats (first ~10% rows are first class)
-INSERT INTO assento (lugar, no_serie, prim_classe) 
-SELECT 
-   row_num || letter AS lugar,
-   no_serie,
-   row_num <= 2 AS prim_classe  -- First 2 rows are first class (~10%)
-FROM (
-   SELECT 
-      generate_series(1, 20) AS row_num,
-      chr(generate_series(65, 70)) AS letter,  -- A-F
-      no_serie
-   FROM aviao
-   CROSS JOIN (SELECT chr(generate_series(65, 70)) AS letters
-) AS seat_data;
+INSERT INTO assento (lugar, no_serie, prim_classe)
+SELECT
+   row_num::text || letter AS lugar,
+   a.no_serie,
+   row_num <= 2 AS prim_classe
+FROM
+   aviao a
+   CROSS JOIN generate_series(1, 20) AS row_num
+   CROSS JOIN (SELECT chr(n) AS letter FROM generate_series(65, 70) n) letters;
 
 -- 4. Insert flights (≥5 flights per day Jan-Jul 2025, round trips, proper airplane routing)
 DO $$
@@ -61,49 +59,45 @@ DECLARE
    airplane_no VARCHAR;
    airplane_idx INTEGER := 0;
    airplane_count INTEGER := (SELECT COUNT(*) FROM aviao);
-   routes RECORD[];
+   route_count INTEGER := (SELECT COUNT(*) FROM aeroporto a1 CROSS JOIN aeroporto a2 WHERE a1.codigo != a2.codigo);
 BEGIN
-   -- Define all possible routes between airports
-   routes := ARRAY(
-      SELECT ROW(a1.codigo, a2.codigo) 
-      FROM aeroporto a1 CROSS JOIN aeroporto a2 
-      WHERE a1.codigo != a2.codigo
-   );
-   
-   route_num := 0;
-   -- Generate flights for each day from Jan 1 to Jul 31, 2025
    FOR flight_date IN SELECT generate_series(
       '2025-01-01'::DATE, 
       '2025-07-31'::DATE, 
       '1 day'::INTERVAL
    )
    LOOP
-      -- Create 5 flights per day
       FOR i IN 1..5 LOOP
-         -- Select route
-         route := routes[1 + (route_num) % array_length(routes, 1)];
-         route_num := route_num + 1;
-         -- Select airplane in round-robin fashion
-         airplane_no := (SELECT no_serie FROM aviao ORDER BY no_serie LIMIT 1 OFFSET airplane_idx);
+         SELECT a1.codigo, a2.codigo AS codigo2
+         INTO route
+         FROM aeroporto a1 CROSS JOIN aeroporto a2
+         WHERE a1.codigo != a2.codigo
+         OFFSET ( (i - 1) % route_count )
+         LIMIT 1;
+
+         SELECT no_serie INTO airplane_no
+         FROM aviao
+         ORDER BY no_serie
+         LIMIT 1 OFFSET airplane_idx;
+
          airplane_idx := (airplane_idx + 1) % airplane_count;
-        
-         -- Morning flight
-         departure_time := (flight_date + TIME '06:00' + (i * INTERVAL '2 hours'));
+
+         departure_time := flight_date + TIME '06:00' + (i * INTERVAL '2 hours');
          arrival_time := departure_time + INTERVAL '2 hours';
-         
+
          INSERT INTO voo (no_serie, hora_partida, hora_chegada, partida, chegada)
          VALUES (airplane_no, departure_time, arrival_time, route.codigo, route.codigo2)
          RETURNING id INTO flight_id;
-       
-         -- Return flight in the afternoon
+
          departure_time := arrival_time + INTERVAL '1 hour';
          arrival_time := departure_time + INTERVAL '2 hours';
-         
+
          INSERT INTO voo (no_serie, hora_partida, hora_chegada, partida, chegada)
          VALUES (airplane_no, departure_time, arrival_time, route.codigo2, route.codigo);
       END LOOP;
    END LOOP;
 END $$;
+
 
 -- 5. Insert sales and tickets (≥30,000 tickets in ≥10,000 sales)
 DO $$
@@ -120,8 +114,8 @@ BEGIN
    FOR flight IN SELECT id, hora_partida, no_serie FROM voo 
    WHERE hora_partida < NOW() ORDER BY hora_partida
    LOOP
-      -- Create 1-5 sales per flight
-      FOR s IN 1..(1 + random() * 4)::INTEGER LOOP
+      -- Create 1-13 sales per flight
+      FOR s IN 1..(1 + random() * 13)::INTEGER LOOP
          sale_count := sale_count + 1;
          
          INSERT INTO venda (nif_cliente, balcao, hora)
@@ -132,9 +126,9 @@ BEGIN
          )
          RETURNING codigo_reserva INTO sale_id;
          
-         -- Create 1-4 tickets per sale
+         -- Create 1-5 tickets per sale
          passenger_num := 0;
-         FOR t IN 1..(1 + random() * 3)::INTEGER LOOP
+         FOR t IN 1..(1 + random() * 5)::INTEGER LOOP
             ticket_count := ticket_count + 1;
             passenger_num := passenger_num + 1;
              
