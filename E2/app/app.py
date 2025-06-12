@@ -1,6 +1,7 @@
 import os
 from datetime import datetime, timedelta
 from logging.config import dictConfig
+from random import random
 from psycopg.rows import namedtuple_row
 from psycopg_pool import ConnectionPool
 from dotenv import load_dotenv
@@ -152,45 +153,40 @@ def make_purchase(voo):
    with pool.connection() as conn:
       with conn.cursor() as cur:
          try:
-            cur.execute("""SELECT no_serie FROM voo WHERE id = %s""", (voo,))
-            no_serie = cur.fetchone()
+            no_serie = cur.execute(
+               """
+               SELECT no_serie 
+               FROM voo 
+               WHERE id = %s
+               """, 
+               (voo,)
+            ).fetchone()
             
             if not no_serie:
-               return jsonify({"error": "Invalid data"}), 400
+               return jsonify({"error": "Voo não encontrado"}), 404
             no_serie = no_serie[0]
             
-            primeira = sum(1 for b in bilhetes if b["classe"] == 1)
-            segunda = len(bilhetes) - primeira
-            
-            cur.execute("""SELECT 
-                        (SELECT COUNT(*) FROM assento
-                        WHERE no_serie = %s AND prim_classe = TRUE
-                        AND (lugar, no_serie) NOT IN (
-                        SELECT lugar, no_serie FROM bilhete WHERE voo_id = %s
-                        )) >= %s AS enough_prim_class,
-                        
-                        (SELECT COUNT(*) FROM assento
-                        WHERE no_serie = %s AND prim_classe = FALSE
-                        AND (lugar, no_serie) NOT IN (
-                        SELECT lugar, no_serie FROM bilhete WHERE voo_id = %s
-                        )) >= %s AS enough_seg_class""", (no_serie, voo, primeira, no_serie, voo, segunda))
-            
-            enough_prim_class, enough_seg_class = cur.fetchone()
-            if not (enough_prim_class and enough_seg_class):
-               return jsonify({"error": "Assentos insuficientes"}), 400
-            
             now = datetime.now()
-            cur.execute("""INSERT INTO venda (nif_cliente, balcao, hora)
-                        VALUES (%s, %s, %s)
-                        RETURNING codigo_reserva;""", (nif_cliente, None, now))
+            cur.execute(
+               """
+               INSERT INTO venda (nif_cliente, hora)
+               VALUES (%s, %s)
+               RETURNING codigo_reserva;
+               """, 
+               (nif_cliente, now)
+            )
             codigo_reserva = cur.fetchone()[0]
 
             for b in bilhetes:
                prim_classe = b["classe"] == 1
-               preco = 120 if prim_classe else 60
-               cur.execute("""
-               INSERT INTO bilhete (voo_id, codigo_reserva, nome_passegeiro, preco, prim_classe, no_serie)
-               VALUES (%s, %s, %s, %s, %s, %s)""", (voo, codigo_reserva, b["nome"], preco, prim_classe, no_serie))
+               preco = 500 + (random() * 1000) if prim_classe else 100 + (random() * 400)
+               cur.execute(
+                  """
+                  INSERT INTO bilhete (voo_id, codigo_reserva, nome_passegeiro, preco, prim_classe)
+                  VALUES (%s, %s, %s, %s, %s)
+                  """, 
+                  (voo, codigo_reserva, b["nome"], preco, prim_classe)
+               )
             
             conn.commit()
             
@@ -277,4 +273,4 @@ def check_in(bilhete_id):
 
 
 if __name__ == '__main__':
-   app.run()
+   app.run(debug=True)
