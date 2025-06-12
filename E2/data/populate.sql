@@ -58,6 +58,7 @@ DECLARE
    route RECORD;
    airplane_no VARCHAR;
    airplane_idx INTEGER := 0;
+   route_num INTEGER := 0;
    airplane_count INTEGER := (SELECT COUNT(*) FROM aviao);
    route_count INTEGER := (SELECT COUNT(*) FROM aeroporto a1 CROSS JOIN aeroporto a2 WHERE a1.codigo != a2.codigo);
 BEGIN
@@ -67,13 +68,15 @@ BEGIN
       '1 day'::INTERVAL
    )
    LOOP
-      FOR i IN 1..5 LOOP
+      FOR i IN 1..15 LOOP
          SELECT a1.codigo, a2.codigo AS codigo2
          INTO route
          FROM aeroporto a1 CROSS JOIN aeroporto a2
          WHERE a1.codigo != a2.codigo
-         OFFSET ( (i - 1) % route_count )
+         OFFSET ( route_num % route_count )
          LIMIT 1;
+
+         route_num := route_num + 1;
 
          SELECT no_serie INTO airplane_no
          FROM aviao
