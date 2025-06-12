@@ -28,4 +28,7 @@ HAVING COUNT(DISTINCT no_serie) = (
     WHERE ev2.hora_partida >= CURRENT_DATE - INTERVAL '3 months'
 )
 
+--ex3
+
+SELECT
 
