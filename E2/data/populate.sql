@@ -129,9 +129,9 @@ BEGIN
          )
          RETURNING codigo_reserva INTO sale_id;
          
-         -- Create 1-5 tickets per sale
+         -- Create 1-6 tickets per sale
          passenger_num := 0;
-         FOR t IN 1..(1 + random() * 5)::INTEGER LOOP
+         FOR t IN 1..(1 + random() * 6)::INTEGER LOOP
             ticket_count := ticket_count + 1;
             passenger_num := passenger_num + 1;
              
@@ -139,7 +139,7 @@ BEGIN
             SELECT a.lugar, a.no_serie, a.prim_classe INTO seat
             FROM assento a
             WHERE a.no_serie = flight.no_serie
-            AND a.prim_classe = (t % 2 = 1)
+            AND a.prim_classe = (t % 5 = 4)
             AND NOT EXISTS (
                SELECT 1 FROM bilhete b 
                WHERE b.voo_id = flight.id 
