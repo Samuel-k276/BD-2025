@@ -31,4 +31,28 @@ HAVING COUNT(DISTINCT no_serie) = (
 --ex3
 
 SELECT
+  pais_partida,
+  cidade_partida,
+  pais_chegada,
+  cidade_chegada,
+  ano,
+  mes,
+  dia_do_mes,
+  SUM(vendas_1c) AS total_vendas_1c,
+  SUM(vendas_2c) AS total_vendas_2c,
+  SUM(vendas_1c + vendas_2c) AS total_vendas
+FROM estatisticas_voos
+GROUP BY ROLLUP(
+  pais_partida, cidade_partida,
+  pais_chegada, cidade_chegada,
+  ano, mes, dia_do_mes
+)
+ORDER BY
+  pais_partida NULLS LAST,
+  cidade_partida NULLS LAST,
+  pais_chegada NULLS LAST,
+  cidade_chegada NULLS LAST,
+  ano NULLS LAST,
+  mes NULLS LAST,
+  dia_do_mes NULLS LAST;
 
