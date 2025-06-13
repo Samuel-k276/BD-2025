@@ -5,7 +5,7 @@ from random import random
 from psycopg.rows import namedtuple_row
 from psycopg_pool import ConnectionPool
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request
+from flask import Flask, json, jsonify, request
 from zoneinfo import ZoneInfo
 
 
@@ -137,14 +137,10 @@ def list_flights(partida: str, chegada: str):
 @app.route('/compra/<voo>', methods=['POST'])
 def make_purchase(voo):
    """
-   json = {
-      nif_cliente: 123456789,`
-      bilhetes: [{nome: "John Doe", classe: 1}, {nome: "Jane Doe", classe: 2}]`
-   }
+   localhost:5000/compra/<voo>?nif_cliente=<nif>&bilhetes=[{"nome": "Nome1", "classe": 1}, {"nome": "Nome2", "classe": 0}]
    """
-   data = request.get_json()
-   nif_cliente = data.get('nif_cliente')
-   bilhetes = data.get('bilhetes')
+   nif_cliente = request.args.get('nif_cliente')
+   bilhetes = json.loads(request.args.get('bilhetes'))
 
    if not (nif_cliente and bilhetes):
       return jsonify({"error": "Invalid data"}), 400
