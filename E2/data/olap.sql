@@ -43,8 +43,7 @@ SELECT
   SUM(vendas_1c + vendas_2c) AS total_vendas
 FROM estatisticas_voos
 GROUP BY ROLLUP(
-  pais_partida, cidade_partida,
-  pais_chegada, cidade_chegada,
+  (pais_partida, pais_chegada), (cidade_partida, cidade_chegada),
   ano, mes, dia_do_mes
 )
 ORDER BY
