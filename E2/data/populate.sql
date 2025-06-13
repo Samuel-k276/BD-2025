@@ -72,7 +72,7 @@ BEGIN
          SELECT a1.codigo, a2.codigo AS codigo2
          INTO route
          FROM aeroporto a1 CROSS JOIN aeroporto a2
-         WHERE a1.codigo != a2.codigo
+         WHERE a1.codigo != a2.codigo AND a1.cidade != a2.cidade
          OFFSET ( route_num % route_count )
          LIMIT 1;
 
