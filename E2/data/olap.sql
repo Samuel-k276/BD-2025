@@ -27,7 +27,7 @@ HAVING COUNT(DISTINCT no_serie) = (
     SELECT COUNT(DISTINCT ev2.no_serie)
     FROM estatisticas_voos ev2
     WHERE ev2.hora_partida >= CURRENT_DATE - INTERVAL '3 months'
-)
+);
 
 --ex3
 SELECT
