@@ -1,5 +1,9 @@
 
-DROP INDEX IF EXISTS idx_estatisticas_rollup_ordenado; 
+DROP INDEX IF EXISTS idx_estatisticas_rollup_ordenado;
+DROP INDEX IF EXISTS idx_hora_partida; 
+
+CREATE INDEX idx_hora_partida 
+ON estatisticas_voos (hora_partida);
 
 CREATE INDEX idx_estatisticas_rollup_ordenado
 ON estatisticas_voos (
@@ -9,5 +13,7 @@ ON estatisticas_voos (
     cidade_chegada,
     ano,
     mes,
-    dia_do_mes, vendas_1c, vendas_2c
+    dia_do_mes, 
+    vendas_1c, 
+    vendas_2c
 );
