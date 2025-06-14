@@ -1,15 +1,13 @@
 import os
 from datetime import datetime, timedelta
-from logging.config import dictConfig
 from random import random
 from psycopg.rows import namedtuple_row
 from psycopg_pool import ConnectionPool
 from dotenv import load_dotenv
-from flask import Flask, json, jsonify, request
+from flask import Flask, jsonify, request
 from zoneinfo import ZoneInfo
 
-
-
+TZ = ZoneInfo("Europe/Lisbon")
 
 load_dotenv()
 DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://postgres:postgres@postgres/postgres")
@@ -28,19 +26,12 @@ pool = ConnectionPool(
    timeout=10,
 )
 
-def check_connection():
-   """
-   Tenta conectar ao banco de dados e retorna True se a conexão for bem-sucedida.
-   """
-   try:
-      with pool.connection() as conn:
-         with conn.cursor() as cur:
-            cur.execute("SELECT 1")
-      return True
-   except Exception as e:
-      print(f"Connection check failed: {e}")
-      return False
 
+def get_time():
+   """
+   Retorna a hora atual no fuso horário de Lisboa.
+   """
+   return datetime.now(TZ)
 
 app = Flask(__name__)
 log = app.logger
@@ -76,7 +67,7 @@ def list_flights_from_departure(partida):
    with pool.connection() as conn:
       with conn.cursor() as cur:
          try:
-            now = datetime.now() + timedelta(hours=12)
+            now = get_time() + timedelta(hours=12)
             rows = cur.execute(
                """
                SELECT no_serie, hora_partida, partida, chegada 
@@ -93,11 +84,11 @@ def list_flights_from_departure(partida):
 
 
 @app.route('/voos/<partida>/<chegada>', methods=['GET'])
-def list_flights(partida: str, chegada: str):
+def list_flights(partida, chegada):
    """
    Retorna os voos disponíveis entre dois aeroportos específicos.
    """
-   now = datetime.now()
+   now = get_time()
    with pool.connection() as conn:
       with conn.cursor() as cur:
          try:
@@ -137,14 +128,15 @@ def list_flights(partida: str, chegada: str):
 @app.route('/compra/<voo>', methods=['POST'])
 def make_purchase(voo):
    """
-   localhost:5000/compra/<voo>?nif_cliente=<nif>&bilhetes=[{"nome": "Nome1", "classe": 1}, {"nome": "Nome2", "classe": 0}]
+   Registra a compra de bilhetes para um voo específico.
+   Recebe no corpo da request um JSON com o NIF do cliente e uma lista de bilhetes.
    """
-   nif_cliente = request.args.get('nif_cliente')
-   bilhetes = json.loads(request.args.get('bilhetes'))
+   data = request.get_json()
+   nif_cliente = data.get("nif_cliente")
+   bilhetes = data.get("bilhetes")
 
    if not (nif_cliente and bilhetes):
       return jsonify({"error": "Invalid data"}), 400
-
 
    with pool.connection() as conn:
       with conn.cursor() as cur:
@@ -161,8 +153,8 @@ def make_purchase(voo):
             if not no_serie:
                return jsonify({"error": "Voo não encontrado"}), 404
             no_serie = no_serie[0]
-            
-            now = datetime.now()
+
+            now = get_time()
             cur.execute(
                """
                INSERT INTO venda (nif_cliente, hora)
@@ -263,7 +255,7 @@ def check_in(bilhete_id):
             }), 200
 
          except Exception as e:
-            conn.rollback()  # Rollback em caso de erro
+            conn.rollback()
             log.error(f"Database error: {e}")
             return jsonify({"error": str(e)}), 500
 
