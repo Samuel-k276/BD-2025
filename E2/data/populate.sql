@@ -12,16 +12,33 @@ INSERT INTO aeroporto (codigo, nome, cidade, pais) VALUES
    -- Paris (2 airports)
    ('CDG', 'Charles de Gaulle Airport', 'Paris', 'France'),
    ('ORY', 'Orly Airport', 'Paris', 'France'),
-   
-   -- Other major European airports
+
+    -- Germany (2 airports)
+    ('MUC', 'Munich Airport', 'Munich', 'Germany'),
    ('FRA', 'Frankfurt Airport', 'Frankfurt', 'Germany'),
+    
+    -- Spain (2 airports)
+    ('BCN', 'Barcelona-El Prat Airport', 'Barcelona', 'Spain'),
+    ('MAD', 'Adolfo Suárez Madrid-Barajas Airport', 'Madrid', 'Spain'),
+    
+    -- Italy (second airport)
+    ('LIN', 'Milan Linate Airport', 'Milan', 'Italy'),
+    ('FCO', 'Leonardo da Vinci-Fiumicino Airport', 'Rome', 'Italy'),
+    
+    -- Other major European airports
    ('AMS', 'Amsterdam Schiphol Airport', 'Amsterdam', 'Netherlands'),
-   ('MAD', 'Adolfo Suárez Madrid-Barajas Airport', 'Madrid', 'Spain'),
-   ('FCO', 'Leonardo da Vinci-Fiumicino Airport', 'Rome', 'Italy'),
    ('LIS', 'Humberto Delgado Airport', 'Lisbon', 'Portugal'),
    ('ZRH', 'Zurich Airport', 'Zurich', 'Switzerland'),
    ('CPH', 'Copenhagen Airport', 'Copenhagen', 'Denmark'),
-   ('VIE', 'Vienna International Airport', 'Vienna', 'Austria');
+   ('VIE', 'Vienna International Airport', 'Vienna', 'Austria'),
+    ('OSL', 'Oslo Gardermoen Airport', 'Oslo', 'Norway'),
+    ('ARN', 'Stockholm Arlanda Airport', 'Stockholm', 'Sweden'),
+    ('HEL', 'Helsinki-Vantaa Airport', 'Helsinki', 'Finland'),
+    ('WAW', 'Warsaw Chopin Airport', 'Warsaw', 'Poland'),
+    ('BUD', 'Budapest Ferenc Liszt Airport', 'Budapest', 'Hungary'),
+    ('PRG', 'Václav Havel Airport Prague', 'Prague', 'Czech Republic'),
+    ('ATH', 'Athens International Airport', 'Athens', 'Greece'),
+    ('LJU', 'Ljubljana Jože Pučnik Airport', 'Ljubljana', 'Slovenia');
 
 -- 2. Insert airplanes (≥10 planes of ≥3 distinct models)
 INSERT INTO aviao (no_serie, modelo) VALUES
@@ -68,7 +85,7 @@ BEGIN
       '1 day'::INTERVAL
    )
    LOOP
-      FOR i IN 1..15 LOOP
+      FOR i IN 1..30 LOOP
          SELECT a1.codigo, a2.codigo AS codigo2
          INTO route
          FROM aeroporto a1 CROSS JOIN aeroporto a2
@@ -163,8 +180,6 @@ BEGIN
          END LOOP;
       END LOOP;
    END LOOP;
-    
-   RAISE NOTICE 'Created % sales with % total tickets', sale_count, ticket_count;
 END $$;
 
 COMMIT;
