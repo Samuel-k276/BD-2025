@@ -52,6 +52,8 @@ ON estatisticas_voos (
 
 -- 3. "idx_estatisticas_dia_semana_rollup": índice composto que melhora o desempenho de consultas que agregam dados
 -- por dia da semana, como na consulta 5.4. Este índice é particularmente útil para consultas que envolvem
--- agregações e filtragens por dia da semana, país e cidade de partida e chegada. Antes de criar este índice,
--- a consulta 5.4 tinha um custo de 34061 e demorava 324ms. Depois de criar o índice, o custo da consulta foi reduzido para
--- 15637, com um tempo de execução de 67ms, mostrando uma melhoria significativa, na ordem dos 80%.
+-- agregações e filtragens por dia da semana, país e cidade de partida e chegada. Antes da criação do índice, 
+-- a consulta incluia operações como  o SeqScan, Sort e Gather Merge. Com o índice, a consulta pode ser executada
+-- fazendo apenas um index-only Scan. Antes de criar este índice, a consulta 5.4 tinha um custo de 34061 e demorava 324ms. 
+-- Depois de criar o índice, o custo da consulta foi reduzido para 15637, com um tempo de execução de 67ms, mostrando 
+--uma melhoria significativa, na ordem dos 80%.
