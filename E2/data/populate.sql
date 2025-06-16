@@ -1,44 +1,33 @@
-%%sql
-
--- populate.sql
+-- This script populates the database with initial data for testing purposes.
 BEGIN;
 
 -- 1. Insert airports (≥10 European international airports, with 2 cities having 2 airports)
 INSERT INTO aeroporto (codigo, nome, cidade, pais) VALUES
-   -- London (2 airports)
+   -- Cities with 2 airports
    ('LHR', 'Heathrow Airport', 'London', 'United Kingdom'),
    ('LGW', 'Gatwick Airport', 'London', 'United Kingdom'),
-   
-   -- Paris (2 airports)
    ('CDG', 'Charles de Gaulle Airport', 'Paris', 'France'),
    ('ORY', 'Orly Airport', 'Paris', 'France'),
-
-    -- Germany (2 airports)
-    ('MUC', 'Munich Airport', 'Munich', 'Germany'),
+   ('MUC', 'Munich Airport', 'Munich', 'Germany'),
    ('FRA', 'Frankfurt Airport', 'Frankfurt', 'Germany'),
-    
-    -- Spain (2 airports)
-    ('BCN', 'Barcelona-El Prat Airport', 'Barcelona', 'Spain'),
-    ('MAD', 'Adolfo Suárez Madrid-Barajas Airport', 'Madrid', 'Spain'),
-    
-    -- Italy (second airport)
-    ('LIN', 'Milan Linate Airport', 'Milan', 'Italy'),
-    ('FCO', 'Leonardo da Vinci-Fiumicino Airport', 'Rome', 'Italy'),
-    
-    -- Other major European airports
+   ('BCN', 'Barcelona-El Prat Airport', 'Barcelona', 'Spain'),
+   ('MAD', 'Adolfo Suárez Madrid-Barajas Airport', 'Madrid', 'Spain'),
+   ('LIN', 'Milan Linate Airport', 'Milan', 'Italy'),
+   ('FCO', 'Leonardo da Vinci-Fiumicino Airport', 'Rome', 'Italy'),
+   -- Cities with only 1
    ('AMS', 'Amsterdam Schiphol Airport', 'Amsterdam', 'Netherlands'),
    ('LIS', 'Humberto Delgado Airport', 'Lisbon', 'Portugal'),
    ('ZRH', 'Zurich Airport', 'Zurich', 'Switzerland'),
    ('CPH', 'Copenhagen Airport', 'Copenhagen', 'Denmark'),
    ('VIE', 'Vienna International Airport', 'Vienna', 'Austria'),
-    ('OSL', 'Oslo Gardermoen Airport', 'Oslo', 'Norway'),
-    ('ARN', 'Stockholm Arlanda Airport', 'Stockholm', 'Sweden'),
-    ('HEL', 'Helsinki-Vantaa Airport', 'Helsinki', 'Finland'),
-    ('WAW', 'Warsaw Chopin Airport', 'Warsaw', 'Poland'),
-    ('BUD', 'Budapest Ferenc Liszt Airport', 'Budapest', 'Hungary'),
-    ('PRG', 'Václav Havel Airport Prague', 'Prague', 'Czech Republic'),
-    ('ATH', 'Athens International Airport', 'Athens', 'Greece'),
-    ('LJU', 'Ljubljana Jože Pučnik Airport', 'Ljubljana', 'Slovenia');
+   ('OSL', 'Oslo Gardermoen Airport', 'Oslo', 'Norway'),
+   ('ARN', 'Stockholm Arlanda Airport', 'Stockholm', 'Sweden'),
+   ('HEL', 'Helsinki-Vantaa Airport', 'Helsinki', 'Finland'),
+   ('WAW', 'Warsaw Chopin Airport', 'Warsaw', 'Poland'),
+   ('BUD', 'Budapest Ferenc Liszt Airport', 'Budapest', 'Hungary'),
+   ('PRG', 'Václav Havel Airport Prague', 'Prague', 'Czech Republic'),
+   ('ATH', 'Athens International Airport', 'Athens', 'Greece'),
+   ('LJU', 'Ljubljana Jože Pučnik Airport', 'Ljubljana', 'Slovenia');
 
 -- 2. Insert airplanes (≥10 planes of ≥3 distinct models)
 INSERT INTO aviao (no_serie, modelo) VALUES
@@ -65,7 +54,7 @@ FROM
    CROSS JOIN generate_series(1, 20) AS row_num
    CROSS JOIN (SELECT chr(n) AS letter FROM generate_series(65, 70) n) letters;
 
--- 4. Insert flights (≥5 flights per day Jan-Jul 2025, round trips, proper airplane routing)
+-- 4. Insert flights
 DO $$
 DECLARE
    flight_date DATE;
@@ -80,7 +69,7 @@ DECLARE
    route_count INTEGER := (SELECT COUNT(*) FROM aeroporto a1 CROSS JOIN aeroporto a2 WHERE a1.codigo != a2.codigo);
 BEGIN
    FOR flight_date IN SELECT generate_series(
-      '2025-01-01'::DATE, 
+      '2017-01-01'::DATE, 
       '2025-07-31'::DATE, 
       '1 day'::INTERVAL
    )
@@ -119,7 +108,7 @@ BEGIN
 END $$;
 
 
--- 5. Insert sales and tickets (≥30,000 tickets in ≥10,000 sales)
+-- 5. Insert sales and tickets
 DO $$
 DECLARE
    sale_id INTEGER;
@@ -130,12 +119,10 @@ DECLARE
    passenger_num INTEGER;
    flight_date DATE;
 BEGIN
-   -- For each flight that has already occurred (before current date)
    FOR flight IN SELECT id, hora_partida, no_serie FROM voo 
    WHERE hora_partida < NOW() ORDER BY hora_partida
    LOOP
-      -- Create 1-13 sales per flight
-      FOR s IN 1..(1 + random() * 13)::INTEGER LOOP
+      FOR s IN 1..(1 + random() * 4)::INTEGER LOOP
          sale_count := sale_count + 1;
          
          INSERT INTO venda (nif_cliente, balcao, hora)
@@ -146,17 +133,15 @@ BEGIN
          )
          RETURNING codigo_reserva INTO sale_id;
          
-         -- Create 1-6 tickets per sale
          passenger_num := 0;
          FOR t IN 1..(1 + random() * 6)::INTEGER LOOP
             ticket_count := ticket_count + 1;
             passenger_num := passenger_num + 1;
              
-            -- Select an available seat (alternating between first and economy class)
             SELECT a.lugar, a.no_serie, a.prim_classe INTO seat
             FROM assento a
             WHERE a.no_serie = flight.no_serie
-            AND a.prim_classe = (t % 5 = 4)
+            AND a.prim_classe = (t % 5 = 3)
             AND NOT EXISTS (
                SELECT 1 FROM bilhete b 
                WHERE b.voo_id = flight.id 
