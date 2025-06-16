@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS venda CASCADE;
 DROP TABLE IF EXISTS bilhete CASCADE;
 
 CREATE TABLE aeroporto(
-	codigo CHAR(3) PRIMARY KEY CHECK (codigo ~ '^[A-Z]$'),
+	codigo CHAR(3) PRIMARY KEY CHECK (codigo ~ '^[A-Z]{3}$'),
 	nome VARCHAR(80) NOT NULL,
 	cidade VARCHAR(255) NOT NULL,
 	pais VARCHAR(255) NOT NULL,
@@ -45,10 +45,6 @@ CREATE TABLE venda (
 	nif_cliente CHAR(9) NOT NULL,
 	balcao CHAR(3) REFERENCES aeroporto(codigo),
 	hora TIMESTAMP
-
-	CONSTRAINT check_hora_venda CHECK (
-		hora < (SELECT MIN(hora_partida) FROM bilhete WHERE bilhete.codigo_reserva = venda.codigo_reserva JOIN voo ON voo.id = bilhete.voo_id)
-	)
 );
 
 CREATE TABLE bilhete (
@@ -62,23 +58,4 @@ CREATE TABLE bilhete (
 	no_serie VARCHAR(80),
 	UNIQUE (voo_id, codigo_reserva, nome_passegeiro),
 	FOREIGN KEY (lugar, no_serie) REFERENCES assento
-
-   CONSTRAINT check_classe_assento CHECK (
-		(lugar IS NULL AND no_serie IS NULL) OR
-		(lugar IS NOT NULL AND no_serie IS NOT NULL AND
-		 prim_classe = (SELECT prim_classe FROM assento WHERE lugar = bilhete.lugar AND no_serie = bilhete.no_serie))
-	)
-
-	CONSTRAINT check_no_serie CHECK (
-		(lugar IS NULL AND no_serie IS NULL) OR
-		(lugar IS NOT NULL AND no_serie IS NOT NULL AND
-		 no_serie = (SELECT no_serie FROM voo WHERE voo_id = voo.id))
-	)
-
-	CONSTRAINT check_capacidade_classe CHECK (
-		((SELECT COUNT(*) FROM bilhete WHERE voo_id = voo.id AND prim_classe = TRUE) <=
-		(SELECT COUNT(*) FROM assento WHERE no_serie = voo.no_serie AND prim_classe = TRUE)) AND 
-		((SELECT COUNT(*) FROM bilhete WHERE voo_id = voo.id AND prim_classe = FALSE) <=
-		(SELECT COUNT(*) FROM assento WHERE no_serie = voo.no_serie AND prim_classe = FALSE))
-	)
 );
