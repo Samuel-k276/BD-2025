@@ -69,7 +69,7 @@ DECLARE
    route_count INTEGER := (SELECT COUNT(*) FROM aeroporto a1 CROSS JOIN aeroporto a2 WHERE a1.codigo != a2.codigo);
 BEGIN
    FOR flight_date IN SELECT generate_series(
-      '2017-01-01'::DATE, 
+      '2025-01-01'::DATE, 
       '2025-07-31'::DATE, 
       '1 day'::INTERVAL
    )
@@ -91,7 +91,7 @@ BEGIN
 
          airplane_idx := (airplane_idx + 1) % airplane_count;
 
-         departure_time := flight_date + TIME '06:00' + (i * INTERVAL '2 hours');
+         departure_time := flight_date + TIME '06:00' + (i * INTERVAL '30 minutes');
          arrival_time := departure_time + INTERVAL '2 hours';
 
          INSERT INTO voo (no_serie, hora_partida, hora_chegada, partida, chegada)
