@@ -33,27 +33,25 @@ ON estatisticas_voos (
 );
 
 -- Justificação teórica:
--- Para otimizar o desempenho da vista materializada "estatisticas_voos", foram criados dois índices:
+-- Para otimizar o desempenho da vista materializada "estatisticas_voos", foram criados tres índices:
 
 -- 1. "idx_hora_partida": Este índice melhora a eficiência das consultas que filtram ou ordenam por 
 -- "hora_partida", uma coluna frequentemente utilizada, nomeadamente na consulta 5.1 e 5.2. 
 -- Esta B-tree index, que é o tipo padrão de para colunas do tipo "timestamp",
--- e funciona bem para consultas que envolvem intervalos de tempo.
--- Antes de criar este índice, as consultas 5.1 e 5.2 tinham custo de 2709 e 6823, respectivamente 
--- e demoravam respetivamente 18ms e 23ms. Depois de criar o índice, o custo das mesmas consultas
--- foi reduzido para 1813 e 4741, com tempos de execução de 15ms e 14ms, mostrando uma melhoria significativa, na ordem dos 30%.
+-- e funciona bem para consultas que envolvem intervalos de tempo.q
+-- Antes de criar este índice, as consultas 5.1 e 5.2 tinham custo de 6469 e 14089, respectivamente 
+-- e demoravam respetivamente 27ms e 50ms. Depois de criar o índice, o custo das mesmas consultas
+-- foi reduzido para 5160 e 10039, com tempos de execução de 13ms e 19ms, mostrando uma melhoria significativa, na ordem dos 60%.
 
 -- 2. "idx_estatisticas_rollup_ordenado": índice composto que é útil para acelerar as operações de agregação (SUMS)
 -- e agrupamento com ROLLUP, como na consulta 5.3. Para além disto, facilita o ORDER BY porque as colunas ficam ordenadas
 -- no índice, evitando operações adicionais de ordenação. Antes de criar este índice, a consulta 5.3
--- tinha um custo de 9683 e demorava 481ms. Depois de criar o índice, o custo da consulta foi reduzido para 6855,
--- com um tempo de execução de 295ms, mostrando uma melhoria significativa, na ordem dos 40%, especialmente devido ao
+-- tinha um custo de 43919 e demorava 1558ms. Depois de criar o índice, o custo da consulta foi reduzido para 25343,
+-- com um tempo de execução de 918ms, mostrando uma melhoria significativa, na ordem dos 40%, especialmente devido ao
 -- evitar por completo a ordenação dos resultados.
 
 -- 3. "idx_estatisticas_dia_semana_rollup": índice composto que melhora o desempenho de consultas que agregam dados
 -- por dia da semana, como na consulta 5.4. Este índice é particularmente útil para consultas que envolvem
 -- agregações e filtragens por dia da semana, país e cidade de partida e chegada. Antes de criar este índice,
--- a consulta 5.4 tinha um custo de 18395 e demorava 205ms. Depois de criar o índice, o custo da consulta aumentou
--- para 19866, mas o tempo de execução reduziu para 106ms, mostrando uma melhoria significativa, na ordem dos 50%, e
--- mostrando que a estimativa do postgres nem sempre é precisa. Por isso para o índice ser utilizado, é necessário
--- desativar o planner do postgres, através do comando SET enable_seqscan = off;
+-- a consulta 5.4 tinha um custo de 34061 e demorava 324ms. Depois de criar o índice, o custo da consulta foi reduzido para
+-- 15637, com um tempo de execução de 67ms, mostrando uma melhoria significativa, na ordem dos 80%.
