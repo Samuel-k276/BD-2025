@@ -52,8 +52,9 @@ def airports():
                ORDER BY nome
                """
             ).fetchall()
-            log.info(f"Retrieved {len(airports)} airports from the database.")
+
             return jsonify([{"nome": row[0], "cidade": row[1]} for row in airports]), 200
+         
          except Exception as e:
             log.error(f"Database error: {e}")
             return jsonify({"error": str(e)}), 500
@@ -71,6 +72,17 @@ def list_flights_from_departure(partida):
    with pool.connection() as conn:
       with conn.cursor() as cur:
          try:
+            # Verifica se o aeroporto de partida existe
+            aeroporto_exists = cur.execute(
+               """
+               SELECT 1 FROM aeroporto WHERE nome = %s
+               """, 
+               (partida.upper(),)
+            ).fetchone()
+
+            if not aeroporto_exists:
+               return jsonify({"error": f"Aeroporto de partida '{partida}' não encontrado"}), 404
+
             now = get_time() + timedelta(hours=12)
             rows = cur.execute(
                """
@@ -102,7 +114,28 @@ def list_flights(partida, chegada):
    with pool.connection() as conn:
       with conn.cursor() as cur:
          try:
-            cur.execute(
+            # Verifica se os aeroportos existem
+            aeroporto_de_partida_exists = cur.execute(
+               """
+               SELECT 1 FROM aeroporto WHERE nome = %s
+               """, 
+               (partida.upper(),)
+            ).fetchone()
+
+            if not aeroporto_de_partida_exists:
+               return jsonify({"error": f"Aeroporto de partida '{partida}' não encontrado"}), 404
+            
+            aeroporto_de_chegada_exists = cur.execute(
+               """
+               SELECT 1 FROM aeroporto WHERE nome = %s
+               """, 
+               (chegada.upper(),)
+            ).fetchone()
+            
+            if not aeroporto_de_chegada_exists:
+               return jsonify({"error": f"Aeroporto de chegada '{chegada}' não encontrado"}), 404
+
+            rows = cur.execute(
                """
                SELECT v.no_serie, v.hora_partida
                FROM voo v
@@ -124,14 +157,17 @@ def list_flights(partida, chegada):
                LIMIT 3;    
                """, 
                (partida.upper(), chegada.upper(), now)
-            )
-            rows = cur.fetchall()
+            ).fetchall()
+
             results = [
                {"no_serie": row[0], "hora_partida": row[1].isoformat()}
                for row in rows
             ]
+
             return jsonify(results), 200
+         
          except Exception as e:
+            log.error(f"Database error: {e}")
             return jsonify({"error": str(e)}), 500
 
 
@@ -190,15 +226,15 @@ def make_purchase(voo):
 
                prim_classe = b["classe"] == 1
                preco = 500 + (random() * 1000) if prim_classe else 100 + (random() * 400)
-               cur.execute(
+               bilhete_id, preco = cur.execute(
                   """
                   INSERT INTO bilhete (voo_id, codigo_reserva, nome_passegeiro, preco, prim_classe, no_serie)
                   VALUES (%s, %s, %s, %s, %s, %s)
                   RETURNING id, preco;
                   """, 
                   (voo, codigo_reserva, b["nome"], preco, prim_classe, no_serie)
-               )
-               bilhete_id, preco = cur.fetchone()
+               ).fetchone()
+
                return_bilhetes.append({
                   "id": bilhete_id,
                   "nome": b["nome"],
@@ -217,6 +253,7 @@ def make_purchase(voo):
          
          except Exception as e:
             conn.rollback()
+            log.error(f"Database error: {e}")
             return jsonify({"error": str(e)}), 500
 
 

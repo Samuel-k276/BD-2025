@@ -1,3 +1,6 @@
+-- This script creates the necessary tables for the aviation database schema.
+-- It includes tables for airports, airplanes, seats, flights, sales, and tickets.
+
 DROP TABLE IF EXISTS aeroporto CASCADE;
 DROP TABLE IF EXISTS aviao CASCADE;
 DROP TABLE IF EXISTS assento CASCADE;

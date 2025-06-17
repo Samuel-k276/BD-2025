@@ -69,7 +69,7 @@ DECLARE
    route_count INTEGER := (SELECT COUNT(*) FROM aeroporto a1 CROSS JOIN aeroporto a2 WHERE a1.codigo != a2.codigo);
 BEGIN
    FOR flight_date IN SELECT generate_series(
-      '2025-01-01'::DATE, 
+      '2015-01-01'::DATE, 
       '2025-07-31'::DATE, 
       '1 day'::INTERVAL
    )

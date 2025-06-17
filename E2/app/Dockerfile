@@ -1,28 +1,11 @@
 FROM python:3.11-slim
 
-# Install system dependencies for PostgreSQL
-RUN apt-get update && apt-get install -y \
-    postgresql-client \
-    libpq-dev \
-    libpq5 \
-    gcc \
-    g++ \
-    build-essential \
-    pkg-config \
-    && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /app
 
-COPY ./requirements.txt /app/requirements.txt
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
-
-COPY . /app
-
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV FLASK_APP=app.py
-ENV FLASK_DEBUG=0
+COPY . .
 
 EXPOSE 5000
 

@@ -1,5 +1,4 @@
-%%sql
-
+-- This script creates a materialized view named estatisticas_voos
 DROP MATERIALIZED VIEW IF EXISTS estatisticas_voos;
 
 CREATE MATERIALIZED VIEW estatisticas_voos AS

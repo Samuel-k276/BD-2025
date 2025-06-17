@@ -1,10 +1,16 @@
+-- This script creates indexes to optimize the performance of the materialized view estatisticas_voos.
+-- These indexes are designed to improve query performance for common operations on the view.
 
 DROP INDEX IF EXISTS idx_hora_partida; 
+DROP INDEX IF EXISTS idx_estatisticas_por_pais;
 DROP INDEX IF EXISTS idx_estatisticas_rollup_ordenado;
 DROP INDEX IF EXISTS idx_estatisticas_dia_semana_rollup;
 
 CREATE INDEX idx_hora_partida 
 ON estatisticas_voos (hora_partida);
+
+CREATE INDEX idx_estatisticas_por_pais
+ON estatisticas_voos (pais_partida, pais_chegada);
 
 CREATE INDEX idx_estatisticas_rollup_ordenado
 ON estatisticas_voos (
@@ -31,12 +37,6 @@ ON estatisticas_voos (
     passageiros_1c,
     passageiros_2c
 );
-
-CREATE INDEX idx_estatisticas_por_pais
-ON estatisticas_voos (
-    pais_partida,
-    pais_chegada
-)
 
 Justificação teórica:
 Para otimizar o desempenho da vista materializada "estatisticas_voos", foram criados tres índices:

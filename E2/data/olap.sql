@@ -1,3 +1,6 @@
+-- This script contains SQL queries for various exercises related to flight statistics.
+-- It uses the materialized view estatisticas_voos created in view.sql.
+
 --ex1
 SELECT cidade1, cidade2, taxa_ocupacao
 FROM (

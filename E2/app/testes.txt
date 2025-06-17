@@ -15,12 +15,12 @@ curl -X GET "http://localhost:5000/voos/MAD/LIS"
 # 4. Test POST /compra/<voo> - Purchase tickets for a flight
 
 # Single ticket purchase (economy class)
-curl -X POST "http://localhost:5000/compra/1" \
+curl -X POST "http://localhost:5000/compra/56574" \
   -H "Content-Type: application/json" \
   -d '{"nif_cliente": "123456789", "bilhetes": [{"nome": "João Silva", "classe": 0}]}'
 
 # Single ticket purchase (first class) 
-curl -X POST "http://localhost:5000/compra/1" \
+curl -X POST "http://localhost:5000/compra/56574" \
   -H "Content-Type: application/json" \
   -d '{"nif_cliente": "987654321", "bilhetes": [{"nome": "Maria Santos", "classe": 1}]}'
 
